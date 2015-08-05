@@ -1,0 +1,15 @@
+{
+  "name": "crawl-reporter",
+  "license": "ISC",
+  "author": "Souren Papazian",
+  "main": "index.js",
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "commander": "^2.8.1",
+    "graphite": "0.0.6",
+    "rippled-network-crawler": "^0.3.0"
+  },
+  "bin": {
+    "crawl-reporter": "./index.js"
+  }
+}
