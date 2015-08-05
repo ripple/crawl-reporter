@@ -4,6 +4,7 @@ var modelsFactory = require('rippled-network-crawler/src/lib/models.js');
 var DB = require('rippled-network-crawler/src/lib/database');
 var Promise = require('bluebird');
 var graphite = require('graphite');
+var _ = require('lodash');
 var graphiteClient;
 
 function getLatestCrawl(dbUrl, logsql) {
@@ -33,9 +34,17 @@ function writeToGraphite(crawl) {
     crawler: {
       ippCount: rc_util.getIpps(crawl).length,
       publicKeyCount: Object.keys(rc_util.getRippleds(crawl)).length,
-      connectionsCount: Object.keys(rc_util.getLinks(crawl)).length
+      connectionsCount: Object.keys(rc_util.getLinks(crawl)).length,
+      rippleds: {}
     }
   };
+  var rippleds = rc_util.getRippledsC(crawl);
+  _.each( Object.keys(rippleds), function (rippled) {
+    metrics.crawler.rippleds[rippled] = {
+      connectionsCount: rippleds[rippled].in + rippleds[rippled].out
+    }
+  })
+
   graphiteClient.write(metrics, function(err) {
     if (err) {
       console.error(err);
@@ -48,7 +57,7 @@ function recReport(lastId, dbUrl, logsql) {
     if (lastId < latestCrawl.id) {
       writeToGraphite(latestCrawl.data);
       lastId = latestCrawl.id;
-      console.log(lastId);
+      console.log('wrote crawl', lastId, 'to graphite' );
     }
     recReport(lastId, dbUrl, logsql);
   });
