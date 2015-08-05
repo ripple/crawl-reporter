@@ -5,9 +5,7 @@ var commander = require('commander');
 var src = require('./src/program');
 
 commander
-  .version(require('./package.json').version)
-  .option('-i, --ipp',
-          'Report ipp count');
+  .version(require('./package.json').version);
 
 commander
   .command('report <dbUrl> <graphiteUrl>')

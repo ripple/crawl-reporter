@@ -31,7 +31,9 @@ function getLatestCrawl(dbUrl, logsql) {
 function writeToGraphite(crawl) {
   var metrics = {
     crawler: {
-      test: Object.keys(rc_util.getLinks(crawl)).length
+      ippCount: rc_util.getIpps(crawl).length,
+      publicKeyCount: Object.keys(rc_util.getRippleds(crawl)).length,
+      connectionsCount: Object.keys(rc_util.getLinks(crawl)).length
     }
   };
   graphiteClient.write(metrics, function(err) {
