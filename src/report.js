@@ -51,21 +51,23 @@ function writeToGraphite(crawl) {
   });
 }
 
-function recReport(lastId, dbUrl, logsql) {
+function recReport(timeout, lastId, dbUrl, logsql) {
   getLatestCrawl(dbUrl, logsql).then(function(latestCrawl) {
     if (lastId < latestCrawl.id) {
       writeToGraphite(latestCrawl);
       lastId = latestCrawl.id;
       console.log('wrote crawl', lastId, 'to graphite' );
     }
-    recReport(lastId, dbUrl, logsql);
+    setTimeout(function() {
+      recReport(timeout, lastId, dbUrl, logsql)
+    }, timeout);
   });
 }
 
-module.exports = function(dbUrl, graphiteUrl, commander) {
+module.exports = function(timeout, dbUrl, graphiteUrl, commander) {
   return new Promise(function(resolve, reject) {
     var logsql = false;
     graphiteClient = graphite.createClient(graphiteUrl);
-    recReport(-1, dbUrl, logsql);
+    recReport(timeout, -1, dbUrl, logsql);
   });
 };

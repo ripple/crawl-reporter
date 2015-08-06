@@ -8,10 +8,11 @@ commander
   .version(require('./package.json').version);
 
 commander
-  .command('report <dbUrl> <graphiteUrl>')
+  .command('report <timeout> <dbUrl> <graphiteUrl>')
   .description('Indefinitely report latest crawl metrics from db to graphite')
-  .action(function(dbUrl, graphiteUrl) {
-    src.report(dbUrl, graphiteUrl);
+  .action(function(timeout, dbUrl, graphiteUrl) {
+    timeout = parseInt(timeout, 10);
+    src.report(timeout, dbUrl, graphiteUrl);
   });
 
 commander
