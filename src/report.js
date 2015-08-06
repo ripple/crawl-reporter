@@ -32,20 +32,19 @@ function getLatestCrawl(dbUrl, logsql) {
 function writeToGraphite(crawl) {
   var metrics = {
     crawler: {
-      ippCount: rc_util.getIpps(crawl).length,
-      publicKeyCount: Object.keys(rc_util.getRippleds(crawl)).length,
-      connectionsCount: Object.keys(rc_util.getLinks(crawl)).length,
+      ippCount: rc_util.getIpps(crawl.data).length,
+      publicKeyCount: Object.keys(rc_util.getRippleds(crawl.data)).length,
+      connectionsCount: Object.keys(rc_util.getLinks(crawl.data)).length,
       rippleds: {}
     }
   };
-  var rippleds = rc_util.getRippledsC(crawl);
+  var rippleds = rc_util.getRippledsC(crawl.data);
   _.each( Object.keys(rippleds), function (rippled) {
     metrics.crawler.rippleds[rippled] = {
       connectionsCount: rippleds[rippled].in + rippleds[rippled].out
     }
-  })
-
-  graphiteClient.write(metrics, function(err) {
+  });
+  graphiteClient.write(metrics, crawl.start_at ,function(err) {
     if (err) {
       console.error(err);
     }
@@ -55,7 +54,7 @@ function writeToGraphite(crawl) {
 function recReport(lastId, dbUrl, logsql) {
   getLatestCrawl(dbUrl, logsql).then(function(latestCrawl) {
     if (lastId < latestCrawl.id) {
-      writeToGraphite(latestCrawl.data);
+      writeToGraphite(latestCrawl);
       lastId = latestCrawl.id;
       console.log('wrote crawl', lastId, 'to graphite' );
     }
