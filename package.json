@@ -3,6 +3,7 @@
   "license": "ISC",
   "author": "Souren Papazian",
   "main": "index.js",
+  "description": "command line interface to report crawl metrics to graphite",
   "dependencies": {
     "bluebird": "^2.9.34",
     "commander": "^2.8.1",
@@ -12,5 +13,9 @@
   },
   "bin": {
     "crawl-reporter": "./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ripple/crawl-reporter"
   }
 }
