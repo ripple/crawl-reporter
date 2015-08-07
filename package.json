@@ -9,7 +9,8 @@
     "commander": "^2.8.1",
     "graphite": "0.0.6",
     "lodash": "^3.10.1",
-    "rippled-network-crawler": "^0.3.0"
+    "moment": "^2.10.6",
+    "rippled-network-crawler": "^0.3.3"
   },
   "bin": {
     "crawl-reporter": "./index.js"
