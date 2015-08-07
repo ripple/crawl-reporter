@@ -3,7 +3,7 @@ var _ = require('lodash');
 var moment = require('moment');
 
 module.exports = {
-   writeToGraphite: function(crawl, graphiteClient) {
+  writeToGraphite: function(crawl, graphiteClient) {
     var metrics = {
       crawler: {
         ippCount: rc_util.getIpps(crawl.data).length,
@@ -13,16 +13,16 @@ module.exports = {
       }
     };
     var rippleds = rc_util.getRippledsC(crawl.data);
-    _.each( Object.keys(rippleds), function (rippled) {
+    _.each(Object.keys(rippleds), function (rippled) {
       metrics.crawler.rippleds[rippled] = {
         connectionsCount: rippleds[rippled].in + rippleds[rippled].out,
         up: 1
-      }
+      };
     });
-    graphiteClient.write(metrics, moment(crawl.start_at).unix() ,function(err) {
+    graphiteClient.write(metrics, moment(crawl.start_at).valueOf(), function(err) {
       if (err) {
         console.error(err);
       }
     });
   }
-}
+};
