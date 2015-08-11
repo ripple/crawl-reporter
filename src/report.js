@@ -4,6 +4,7 @@ var Promise = require('bluebird');
 var graphite = require('graphite');
 var writeToGraphite = require('./lib/report_graphite.js').writeToGraphite;
 var _ = require('lodash');
+var moment = require('moment');
 var graphiteClient;
 
 function iterReport(startId, endId, dbUrl, logsql) {
@@ -11,7 +12,8 @@ function iterReport(startId, endId, dbUrl, logsql) {
     rc_util.getRowsByIds(dbUrl, startId, endId, logsql).then(function(rows) {
       _.each(rows, function(crawl) {
         writeToGraphite(crawl, graphiteClient);
-        console.log('wrote crawl', crawl.id, 'to graphite');
+        console.log('Wrote crawl %d (%s) to graphite at %s',
+                    crawl.id, moment(crawl.start_at).format(), moment().format());
       });
     });
     return resolve();
