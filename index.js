@@ -12,7 +12,12 @@ commander
   .description('Indefinitely report latest crawl metrics from db to graphite')
   .action(function(timeout, dbUrl, graphiteUrl) {
     timeout = parseInt(timeout, 10);
-    src.live(timeout, dbUrl, graphiteUrl);
+    src
+    .live(timeout, dbUrl, graphiteUrl)
+    .catch(function(err) {
+      console.log(err);
+      process.exit(1);
+    });
   });
 
 commander

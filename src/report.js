@@ -8,9 +8,8 @@ var graphiteClient;
 
 function iterReport(startId, endId, dbUrl, logsql) {
   return new Promise(function(resolve, reject) {
-    rc_util.getCrawlsByIds(dbUrl, startId, endId, logsql).then(function(crawls) {
-      _.each(crawls, function(crawl) {
-        crawl = crawl.dataValues
+    rc_util.getRowsByIds(dbUrl, startId, endId, logsql).then(function(rows) {
+      _.each(rows, function(crawl) {
         writeToGraphite(crawl, graphiteClient);
         console.log('wrote crawl', crawl.id, 'to graphite');
       });

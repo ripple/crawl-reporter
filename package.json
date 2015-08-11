@@ -10,7 +10,7 @@
     "graphite": "0.0.6",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
-    "rippled-network-crawler": "^0.3.3"
+    "rippled-network-crawler": "^0.4.0"
   },
   "bin": {
     "crawl-reporter": "./index.js"
