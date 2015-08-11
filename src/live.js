@@ -9,7 +9,7 @@ var graphiteClient;
 function recReport(timeout, lastId, dbUrl, logsql) {
   console.log('trying to fetch >=', lastId + 1);
   rc_util
-  .getRowsByIds(dbUrl, lastId + 1, Number.MAX_SAFE_INTEGER, logsql)
+  .getRowsByIds(dbUrl, lastId + 1, Number.MAX_VALUE, logsql)
   .then(function(latestCrawls) {
     _.forEach(latestCrawls, function(crawl) {
       writeToGraphite(crawl, graphiteClient);
