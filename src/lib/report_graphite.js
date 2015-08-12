@@ -23,6 +23,9 @@ module.exports = {
     graphiteClient.write(metrics, moment(crawl.start_at).valueOf(), function(err) {
       if (err) {
         console.error(err);
+      } else {
+      console.log('Wrote crawl %d (%s) to graphite at %s',
+              crawl.id, moment(crawl.start_at).format(), moment().format());
       }
     });
   }
