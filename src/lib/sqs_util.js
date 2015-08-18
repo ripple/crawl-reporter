@@ -1,5 +1,4 @@
 var AWS = require('aws-sdk');
-var moment = require('moment');
 AWS.config.region = 'us-west-2';
 var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
 
@@ -9,7 +8,7 @@ module.exports = {
       var params = {
         QueueUrl: queueUrl,
         MaxNumberOfMessages: 1,
-        VisibilityTimeout: 10, // how message unavailable to others
+        VisibilityTimeout: 10, // how long message is unavailable to others
         WaitTimeSeconds: 0
       };
       sqs.receiveMessage(params, function(error, data) {
