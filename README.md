@@ -14,7 +14,7 @@ Commands:
 ## Arguments
 
 #### Command line
-* max     : the max amount of async reports to have running at once
+* max     : the max amount of async reporters to have running at once
 * timeout : how long to wait between checking for messages
 
 #### Environment
