@@ -23,7 +23,7 @@ module.exports = function(crawl, graphiteClient) {
     if (error) {
       console.error(error);
     } else {
-    console.log('Wrote crawl %d \t at %s \t to graphite',
+      console.log('Wrote crawl %d \t at %s \t to graphite',
             crawl.id, moment().format());
     }
   });
