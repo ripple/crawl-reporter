@@ -7,8 +7,8 @@ Usage: crawl-reporter [options] [command]
 
 Commands:
 
-  live <max> <timeout> Indefinitely report latest crawl metrics from db to graphite
-
+  live <max> <timeout> Indefinitely process crawls taken from queue
+  
 ```
 
 ## Arguments
@@ -20,4 +20,4 @@ Commands:
 #### Environment
 * sqs queue URL : `SQS_URL`
 * database URL  : `DATABASE_URL`
-* graphite URL  : `GRAPHITE_URL`
+* graphite URL  : `GRAPHITE_URL` (not used)
