@@ -42,7 +42,7 @@ module.exports = function(max, timeout, queueUrl, dbUrl, graphiteUrl) {
         .catch(console.error);
 
       } else {
-        //console.error("No new messages.");
+        console.error('No new messages \t at %s', moment().format());
         count -= 1;
         return -1;
       }
