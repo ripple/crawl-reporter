@@ -17,7 +17,7 @@ commander
     if (queueUrl && dbUrl && graphiteUrl) {
       src.live(max, timeout, queueUrl, dbUrl, graphiteUrl);
     } else {
-      console.error("Missing enviornment variable.")
+      console.error("Missing environment variable.")
       commander.outputHelp();
     }
   });
