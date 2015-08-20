@@ -8,22 +8,18 @@ commander
   .version(require('./package.json').version);
 
 commander
-  .command('live <workersCount> <batchSize> <dbUrl> <graphiteUrl>')
+  .command('live <max> <timeout>')
   .description('Indefinitely report latest crawl metrics from db to graphite')
-  .action(function(workersCount, batchSize, dbUrl, graphiteUrl) {
-    src
-    .live(workersCount, batchSize, dbUrl, graphiteUrl)
-    .catch(function(err) {
-      console.log(err);
-      process.exit(1);
-    });
-  });
-
-commander
-  .command('report <startId> <endId> <dbUrl> <graphiteUrl>')
-  .description('Report crawl metrics from db to graphite')
-  .action(function(startId, endId, dbUrl, graphiteUrl) {
-    src.report(startId, endId, dbUrl, graphiteUrl);
+  .action(function(max, timeout) {
+    var queueUrl = process.env.SQS_URL;
+    var dbUrl = process.env.DATABASE_URL;
+    var graphiteUrl = process.env.GRAPHITE_URL;
+    if (queueUrl && dbUrl && graphiteUrl) {
+      src.live(max, timeout, queueUrl, dbUrl, graphiteUrl);
+    } else {
+      console.error("Missing environment variable.")
+      commander.outputHelp();
+    }
   });
 
 commander
