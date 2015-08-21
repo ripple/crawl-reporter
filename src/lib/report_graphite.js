@@ -1,4 +1,5 @@
 var moment = require('moment');
+var graphiteClient = graphite.createClient(graphiteUrl);
 
 // Currently doesn't work. Structure will be different, so it needs to be
 //  rewritten anyways

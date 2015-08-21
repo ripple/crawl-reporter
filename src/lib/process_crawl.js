@@ -1,11 +1,40 @@
-var rc_util = require('rippled-network-crawler/src/lib/utility.js');
-var crawler = require('rippled-network-crawler/src/lib/crawler.js');
-var normalizeIpp = crawler.normalizeIpp;
-var normalizePubKey = crawler.normalizePubKey;
 var _ = require('lodash');
 var moment = require('moment');
+var ripple = require('ripple-lib');
+var sjcl = ripple.sjcl;
 var toNormPubKey = {}
 var ippToPk = {}
+
+function normalizePubKey(pubKeyStr) {
+  if (pubKeyStr.length > 50 && pubKeyStr[0] === 'n') {
+    return pubKeyStr;
+  }
+
+  var bits = sjcl.codec.base64.toBits(pubKeyStr);
+  var bytes = sjcl.codec.bytes.fromBits(bits);
+  return ripple.Base.encode_check(ripple.Base.VER_NODE_PUBLIC, bytes);
+}
+
+/*
+* Deals with a variety of (ip, port) possibilities that occur
+* in rippled responses and normalizes them to the format 'ip:port'
+*/
+function normalizeIpp(ip, port) {
+  if (ip) {
+    var split = ip.split(':'),
+        splitIp = split[0],
+        splitPort = split[1];
+
+    var out_ip = splitIp;
+    var out_port = port || splitPort || DEFAULT_PORT;
+    if (out_port) {
+      var ipp = out_ip + ':' + out_port;
+      return ipp;
+    }
+  }
+
+  throw new Error('ip is undefined');
+}
 
 function getRippleds(nodes) {
   var rippleds = {};
@@ -53,6 +82,7 @@ function getRippleds(nodes) {
 
   return rippleds;
 }
+
 function getConnections(nodes) {
   var connections = {};
 
