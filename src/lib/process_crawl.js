@@ -4,21 +4,10 @@ var normalizeIpp = crawler.normalizeIpp;
 var normalizePubKey = crawler.normalizePubKey;
 var _ = require('lodash');
 var moment = require('moment');
+var toNormPubKey = {}
+var ippToPk = {}
 
-function getMetrics(crawl_row) {
-  var metrics = {}; // metrics that will be returned
-
-  /* Crawl Info */
-  var crawl = {
-    "id": crawl_row.id,
-    "start": crawl_row.start_at,
-    "end": crawl_row.end_at
-  };
-
-  var toNormPubKey = {};
-
-  /* Rippled Info */
-  var nodes = JSON.parse(crawl_row.data);
+function getRippleds(nodes) {
   var rippleds = {};
   _.each(nodes, function(node) {
 
@@ -62,18 +51,10 @@ function getMetrics(crawl_row) {
     });
   });
 
-
-  /* Connections Info */
+  return rippleds;
+}
+function getConnections(nodes) {
   var connections = {};
-
-  // Create ippToPk using rippleds
-  var ippToPk = {};
-  _.each(Object.keys(rippleds), function(pk) {
-    var ipp = rippleds[pk].ipp;
-    if (ipp) {
-      ippToPk[ipp] = pk;
-    }
-  });
 
   // Get connections
   _.each(nodes, function(node) {
@@ -130,28 +111,58 @@ function getMetrics(crawl_row) {
     });
   });
 
+  return connections;
+}
+
+function getMetrics(crawl_row) {
+  var metrics = {}; // metrics that will be returned
+
+  /* Crawl Info */
+  var crawl = {
+    "id": crawl_row.id,
+    "start": crawl_row.start_at,
+    "end": crawl_row.end_at
+  };
+
+  /* Rippled Info */
+  var nodes = JSON.parse(crawl_row.data);
+  var rippleds = getRippleds(nodes);
+
+  // Create ippToPk using rippleds
+  _.each(Object.keys(rippleds), function(pk) {
+    var ipp = rippleds[pk].ipp;
+    if (ipp) {
+      ippToPk[ipp] = pk;
+    }
+  });
+
+  /* Connections Info */
+  var connections = getConnections(nodes);
 
   /* In & Out Info */
   _.each(Object.keys(connections), function(link) {
     var from = link.split(',')[0];
     var to = link.split(',')[1];
 
-    if (!rippleds[from].in) {
-      rippleds[from].in = 0;
-    }
-    if (!rippleds[from].out) {
-      rippleds[from].out = 0;
-    }
+    if (rippleds[from] && rippleds[to]) {
+      // from
+      if (!rippleds[from].in) {
+        rippleds[from].in = 0;
+      }
+      if (!rippleds[from].out) {
+        rippleds[from].out = 0;
+      }
+      rippleds[from].out += 1;
 
-    rippleds[from].out += 1;
-
-    if (!rippleds[to].in) {
-      rippleds[to].in = 0;
+      // to
+      if (!rippleds[to].in) {
+        rippleds[to].in = 0;
+      }
+      if (!rippleds[to].out) {
+        rippleds[to].out = 0;
+      }
+      rippleds[to].in += 1;
     }
-    if (!rippleds[to].out) {
-      rippleds[to].out = 0;
-    }
-    rippleds[to].in += 1;
   });
 
 
@@ -181,6 +192,6 @@ function getMetrics(crawl_row) {
 
 module.exports = function(crawl_row) {
   var metrics = getMetrics(crawl_row);
-  //console.log('Processed crawl %d \t at %s', crawl_row.id, moment().format());
+  console.log('Processed crawl %d \t at %s', crawl_row.id, moment().format());
   return metrics;
 }
