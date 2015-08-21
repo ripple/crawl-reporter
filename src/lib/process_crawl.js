@@ -220,8 +220,10 @@ function getMetrics(crawl_row) {
   return metrics;
 }
 
-module.exports = function(crawl_row) {
+module.exports = function(crawl_row, log) {
   var metrics = getMetrics(crawl_row);
-  console.log('Processed crawl %d \t at %s', crawl_row.id, moment().format());
+  if (log) {
+    console.log('Processed crawl %d \t at %s', crawl_row.id, moment().format());
+  }
   return metrics;
 }

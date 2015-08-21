@@ -8,7 +8,7 @@ var moment = require('moment');
 var Promise = require('bluebird');
 var graphite = require('graphite');
 
-module.exports = function(max, timeout, queueUrl, dbUrl, graphiteUrl) {
+module.exports = function(max, timeout, queueUrl, dbUrl, graphiteUrl, log) {
   var graphiteClient = graphite.createClient(graphiteUrl);
   var logsql = false;
   var count = 0;
@@ -26,7 +26,7 @@ module.exports = function(max, timeout, queueUrl, dbUrl, graphiteUrl) {
             throw new Error('No crawls with id %s', id)
           }
 
-          var crawlMetrics = processCrawl(crawl);
+          var crawlMetrics = processCrawl(crawl, log);
           // TODO write to db
           // TODO report to graphite
 
