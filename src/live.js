@@ -1,6 +1,5 @@
 'use strict';
 var rc_util = require('rippled-network-crawler/src/lib/utility.js');
-var _ = require('lodash');
 var reportGraphite = require('./lib/report_graphite');
 var processCrawl = require('./lib/process_crawl');
 var sqs_u = require('./lib/sqs_util');
@@ -27,8 +26,8 @@ module.exports = function(max, timeout, queueUrl, dbUrl, graphiteUrl, log) {
           }
 
           var crawlMetrics = processCrawl(crawl, log);
+          reportGraphite(crawlMetrics, graphiteClient);
           // TODO write to db
-          // TODO report to graphite
 
         })
         .then(function() {  // terminate on success

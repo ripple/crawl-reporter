@@ -1,16 +1,29 @@
 var moment = require('moment');
+var _ = require('lodash');
 
-// Currently doesn't work. Structure will be different, so it needs to be
-//  rewritten anyways
+module.exports = function(crawlMetrics, graphiteClient) {
 
-module.exports = function(metrics, graphiteClient) {
-  // note: crawl not defined
-  graphiteClient.write(metrics, moment(crawl.start_at).valueOf(), function(error) {
+  var metrics = {
+    crawler: {
+      publicKeyCount: Object.keys(crawlMetrics.rippleds).length,
+      connectionsCount: Object.keys(crawlMetrics.connections).length,
+      rippleds: {}
+    }
+  };
+  _.each(Object.keys(crawlMetrics.rippleds), function (rippled) {
+    metrics.crawler.rippleds[rippled] = {
+      connectionsCount: crawlMetrics.rippleds[rippled].in + crawlMetrics.rippleds[rippled].out,
+      uptime: crawlMetrics.rippleds[rippled].uptime,
+      up: 1
+    };
+  });
+
+  graphiteClient.write(metrics, moment(crawlMetrics.crawl.start).valueOf(), function(error) {
     if (error) {
       throw new Error(error);
     } else {
-      console.log('Wrote crawl %d \t at %s \t to graphite',
-        crawl.id, moment().format());
+      console.log('Reported  crawl %d \t at %s \t to graphite',
+        crawlMetrics.crawl.id, moment().format());
     }
   });
 };
