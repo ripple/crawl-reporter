@@ -3,18 +3,27 @@
   "license": "ISC",
   "author": "Souren Papazian",
   "main": "index.js",
+  "scripts": {
+    "test": "mocha test/"
+  },
   "description": "command line interface to report crawl metrics to graphite",
   "dependencies": {
     "aws-sdk": "^2.1.45",
     "bluebird": "^2.9.34",
+    "chai": "^3.2.0",
     "commander": "^2.8.1",
     "graphite": "0.0.6",
     "lodash": "^3.10.1",
+    "mocha": "^2.2.5",
     "moment": "^2.10.6",
+    "ripple-lib": "^0.12.6",
     "rippled-network-crawler": "^0.4.0"
   },
   "bin": {
     "crawl-reporter": "./index.js"
+  },
+  "directories": {
+    "test": "test"
   },
   "repository": {
     "type": "git",

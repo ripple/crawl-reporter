@@ -5,7 +5,9 @@ var commander = require('commander');
 var src = require('./src/program');
 
 commander
-  .version(require('./package.json').version);
+  .version(require('./package.json').version)
+  .option('-q, --quiet',
+          'Won\'t log');
 
 commander
   .command('live <max> <timeout>')
@@ -14,8 +16,9 @@ commander
     var queueUrl = process.env.SQS_URL;
     var dbUrl = process.env.DATABASE_URL;
     var graphiteUrl = process.env.GRAPHITE_URL;
+    var log = !commander.quiet;
     if (queueUrl && dbUrl && graphiteUrl) {
-      src.live(max, timeout, queueUrl, dbUrl, graphiteUrl);
+      src.live(max, timeout, queueUrl, dbUrl, graphiteUrl, log);
     } else {
       console.error("Missing environment variable.")
       commander.outputHelp();
