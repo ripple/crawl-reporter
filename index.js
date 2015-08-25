@@ -10,15 +10,15 @@ commander
           'Won\'t log');
 
 commander
-  .command('live <max> <timeout>')
+  .command('live <max>')
   .description('Indefinitely report latest crawl metrics from db to graphite')
-  .action(function(max, timeout) {
+  .action(function(max) {
     var queueUrl = process.env.SQS_URL;
     var dbUrl = process.env.DATABASE_URL;
     var graphiteUrl = process.env.GRAPHITE_URL;
     var log = !commander.quiet;
     if (queueUrl && dbUrl && graphiteUrl) {
-      src.live(max, timeout, queueUrl, dbUrl, graphiteUrl, log);
+      src.live(max, queueUrl, dbUrl, graphiteUrl, log);
     } else {
       console.error("Missing environment variable.")
       commander.outputHelp();

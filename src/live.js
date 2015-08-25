@@ -7,12 +7,11 @@ var moment = require('moment');
 var Promise = require('bluebird');
 var graphite = require('graphite');
 
-module.exports = function(max, timeout, queueUrl, dbUrl, graphiteUrl, log) {
+module.exports = function(max, queueUrl, dbUrl, graphiteUrl, log) {
   var graphiteClient = graphite.createClient(graphiteUrl);
   var logsql = false;
-  var count = 0;
 
-  function processMessage(workerID) {
+  function processMessage() {
     sqs_u.getMessage(queueUrl)
     .then(function(response) {
       if (response.Messages) {
@@ -32,27 +31,21 @@ module.exports = function(max, timeout, queueUrl, dbUrl, graphiteUrl, log) {
         })
         .then(function() {  // terminate on success
           sqs_u.deleteMessage(queueUrl, receiptHandle);
-          count -= 1;
+          process.nextTick(processMessage);
         })
         .catch(function(error) { // terminate on message processing error
-          count -= 1;
           console.error(error);
           process.exit(1);
         });
       } else { // terminate on message absence error
-        count -= 1;
         console.error('No new messages \t at %s', moment().format());
+        process.nextTick(processMessage);
       }
     });
   };
 
-  var addWorker = function() {
-    setTimeout(addWorker, timeout);
-    if (count < max) {
-      count += 1;
-      processMessage(count);
-    }
+  for(var i = 0; i < max; i++) {
+    console.log("Spawned subworker", i);
+    processMessage();
   }
-
-  setTimeout(addWorker, timeout);
 };
