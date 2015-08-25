@@ -17,7 +17,7 @@
     "mocha": "^2.2.5",
     "moment": "^2.10.6",
     "ripple-lib": "^0.12.6",
-    "rippled-network-crawler": "^0.4.0"
+    "rippled-network-crawler": "^0.4.3"
   },
   "bin": {
     "crawl-reporter": "./index.js"
