@@ -37,6 +37,7 @@ module.exports = function(max, timeout, queueUrl, dbUrl, graphiteUrl, log) {
         .catch(function(error) { // terminate on message processing error
           count -= 1;
           console.error(error);
+          process.exit(1);
         });
       } else { // terminate on message absence error
         count -= 1;
