@@ -1,6 +1,7 @@
 var AWS = require('aws-sdk');
 AWS.config.region = 'us-west-2';
 var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+var Promise = require('bluebird');
 
 module.exports = {
   getMessage: function(queueUrl) {
