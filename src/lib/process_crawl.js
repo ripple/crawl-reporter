@@ -80,6 +80,15 @@ function getRippleds(nodes) {
     });
   });
 
+  // Get request time for each node
+  _.forEach(nodes, function(node) {
+    var ipp = Object.keys(node)[0];
+    var public_key = _.findKey(rippleds, function(rippled) {
+      return rippled.ipp===ipp
+    })
+    rippleds[public_key].request_time = moment(node[ipp].request_end_at).diff(moment(node[ipp].request_start_at));
+  });
+
   return rippleds;
 }
 
