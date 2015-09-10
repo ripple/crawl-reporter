@@ -11,7 +11,7 @@ describe('Crawl Processing', function() {
     });
     it("Should return an object with expected properties", function() {
       var metrics = processCrawl(valid_row, false);
-
+// console.log(metrics)
       // crawl
       expect(metrics).to.have.property('crawl');
       expect(metrics.crawl).to.be.an('object');

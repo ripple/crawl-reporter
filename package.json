@@ -12,12 +12,14 @@
     "bluebird": "^2.9.34",
     "chai": "^3.2.0",
     "commander": "^2.8.1",
-    "graphite": "0.0.6",
+    "graphite": "^0.0.6",
+    "hbase": "^0.2.1",
+    "hbase-client": "^1.4.0",
+    "node-thrift-hbase": "^0.12.1",
     "lodash": "^3.10.1",
     "mocha": "^2.2.5",
     "moment": "^2.10.6",
-    "ripple-lib": "^0.12.6",
-    "rippled-network-crawler": "^0.4.3"
+    "ripple-lib": "^0.12.6"
   },
   "bin": {
     "crawl-reporter": "./index.js"

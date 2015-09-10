@@ -14,11 +14,10 @@ commander
   .description('Indefinitely report latest crawl metrics from db to graphite')
   .action(function(max) {
     var queueUrl = process.env.SQS_URL;
-    var dbUrl = process.env.DATABASE_URL;
     var graphiteUrl = process.env.GRAPHITE_URL;
     var log = !commander.quiet;
-    if (queueUrl && dbUrl && graphiteUrl) {
-      src.live(max, queueUrl, dbUrl, graphiteUrl, log);
+    if (queueUrl && process.env.HBASE_HOST && process.env.HBASE_PORT && graphiteUrl) {
+      src.live(max, queueUrl, graphiteUrl, log);
     } else {
       console.error("Missing environment variable.")
       commander.outputHelp();

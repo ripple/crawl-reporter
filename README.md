@@ -19,5 +19,6 @@ Commands:
 
 #### Environment
 * sqs queue URL : `SQS_URL`
-* database URL  : `DATABASE_URL`
+* HBase db host : `HBASE_HOST`
+* HBase db port : `HBASE_PORT`
 * graphite URL  : `GRAPHITE_URL` (not used)

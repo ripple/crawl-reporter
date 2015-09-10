@@ -1,15 +1,14 @@
 'use strict';
-var rc_util = require('rippled-network-crawler/src/lib/utility.js');
 var reportGraphite = require('./lib/report_graphite');
 var processCrawl = require('./lib/process_crawl');
 var sqs_u = require('./lib/sqs_util');
+var hbase = require('.lib/hbase');
 var moment = require('moment');
 var Promise = require('bluebird');
 var graphite = require('graphite');
 
-module.exports = function(max, queueUrl, dbUrl, graphiteUrl, log) {
+module.exports = function(max, queueUrl, graphiteUrl, log) {
   var graphiteClient = graphite.createClient(graphiteUrl);
-  var logsql = false;
 
   function processMessage() {
     sqs_u.getMessage(queueUrl)
@@ -17,8 +16,7 @@ module.exports = function(max, queueUrl, dbUrl, graphiteUrl, log) {
       if (response.Messages) {
         var id = response.Messages[0].Body;
         var receiptHandle = response.Messages[0].ReceiptHandle;
-        rc_util
-        .getRowById(dbUrl, id, logsql)
+        hbase.getRawCrawl(id)
         .then(function(crawl) {
           if (!crawl) {
             throw new Error('No crawls with id %s', id)
