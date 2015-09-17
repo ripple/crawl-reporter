@@ -14,7 +14,7 @@ commander
   .description('Indefinitely report latest crawl metrics from db to graphite')
   .action(function(max) {
     var queueUrl = process.env.SQS_URL;
-    var dbUrl = process.env.DATABASE_URL;
+    var dbUrl = process.env.HBASE_URL;
     var graphiteUrl = process.env.GRAPHITE_URL;
     var log = !commander.quiet;
     if (queueUrl && dbUrl && graphiteUrl) {
