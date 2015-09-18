@@ -1,9 +1,11 @@
 var _ = require('lodash');
 var moment = require('moment');
 var ripple = require('ripple-lib');
+var hbaseUtils = require('crawler-hbase').utils;
 var sjcl = ripple.sjcl;
 var toNormPubKey = {}
 var ippToPk = {}
+
 
 function normalizePubKey(pubKeyStr) {
   if (pubKeyStr.length > 50 && pubKeyStr[0] === 'n') {
@@ -38,11 +40,17 @@ function normalizeIpp(ip, port) {
 
 function getRippleds(nodes) {
   var rippleds = {};
+  var maxUptimeByIpp = {};
+
   _.each(nodes, function(node) {
 
     // node properties
     var n_ipp = Object.keys(node)[0];
+    maxUptimeByIpp[n_ipp] = 0;
     var n_peers = node[n_ipp].overlay.active;
+    
+    var requestStart = moment(node[n_ipp].request_start_at);
+    var requestEnd = moment(node[n_ipp].request_end_at);
 
     _.each(n_peers, function(peer) {
 
@@ -61,9 +69,8 @@ function getRippleds(nodes) {
       } catch (error) {
         p_ipp = undefined;
       }
-
       var uptime = peer.uptime;
-
+      maxUptimeByIpp[n_ipp] = Math.max(maxUptimeByIpp[n_ipp], uptime);        
       // Fill in rippled
       var rippled = rippleds[p_pk];
       if (rippled) {
@@ -73,13 +80,21 @@ function getRippleds(nodes) {
         if (!rippled.version) {
           rippled.version = p_v;
         }
+        if (!rippled.uptime || rippled.uptime<uptime) {
+          rippled.uptime = uptime;
+        }          
       } else {
-        rippleds[p_pk] = {ipp: p_ipp, version: p_v, uptime: uptime};
+        rippleds[p_pk] = {ipp: p_ipp, version: p_v, uptime: uptime, request_time: requestEnd.diff(requestStart)};
       }
-
     });
   });
-
+  // correcting uptime once rippleds and maxUptimeByIpp are ready
+  _.each(rippleds, function(r) {
+    var peerMaxUptime = r.ipp && maxUptimeByIpp[r.ipp];
+    if (!r.uptime || peerMaxUptime > r.uptime) {
+      r.uptime = peerMaxUptime;
+    }
+  });
   return rippleds;
 }
 
@@ -105,7 +120,7 @@ function getConnections(nodes) {
       }
       var p_type = peer.type;
 
-      var a, b;
+      var a, b; // a = to, b = from
       // Make link
       if (p_type) {
         // Get link
@@ -149,9 +164,10 @@ function getMetrics(crawl_row) {
 
   /* Crawl Info */
   var crawl = {
-    "id": crawl_row.id,
-    "start": crawl_row.start_at,
-    "end": crawl_row.end_at
+    'id': crawl_row.rowkey,
+    'start': hbaseUtils.keyToStart(crawl_row.rowkey),
+    'end': hbaseUtils.keyToEnd(crawl_row.rowkey),
+    'entry': crawl_row.entry_ipp
   };
 
   /* Rippled Info */
@@ -221,9 +237,10 @@ function getMetrics(crawl_row) {
 }
 
 module.exports = function(crawl_row, log) {
+  if(!crawl_row) return undefined;
   var metrics = getMetrics(crawl_row);
   if (log) {
-    console.log('Processed crawl %d \t at %s', crawl_row.id, moment().format());
+    console.log('Processed crawl %s \t at %s', crawl_row.rowkey, moment().format());
   }
   return metrics;
 }

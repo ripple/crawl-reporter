@@ -26,12 +26,12 @@ describe('Crawl Processing', function() {
       // rippleds
       expect(metrics).to.have.property('rippleds');
       expect(metrics.rippleds).to.be.an('object');
-      expect(Object.keys(metrics.rippleds).length).to.equal(117);
+      expect(Object.keys(metrics.rippleds).length).to.equal(108);
 
       // connections
       expect(metrics).to.have.property('connections');
       expect(metrics.connections).to.be.an('object');
-      expect(Object.keys(metrics.connections).length).to.equal(1942);
+      expect(Object.keys(metrics.connections).length).to.equal(1776);
     });
 
   });
