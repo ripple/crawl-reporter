@@ -47,6 +47,9 @@ function getRippleds(nodes) {
     // node properties
     var n_ipp = Object.keys(node)[0];
     maxUptimeByIpp[n_ipp] = 0;
+    if (!node[n_ipp]['overlay']) {
+      return;
+    }
     var n_peers = node[n_ipp].overlay.active;
     
     var requestStart = moment(node[n_ipp].request_start_at);
@@ -106,6 +109,9 @@ function getConnections(nodes) {
 
     // node properties
     var n_ipp = Object.keys(node)[0];
+    if (!node[n_ipp]['overlay']) {
+      return;
+    }
     var n_peers = node[n_ipp].overlay.active;
 
     _.each(n_peers, function(peer) {

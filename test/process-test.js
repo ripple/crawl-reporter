@@ -31,7 +31,7 @@ describe('Crawl Processing', function() {
       // connections
       expect(metrics).to.have.property('connections');
       expect(metrics.connections).to.be.an('object');
-      expect(Object.keys(metrics.connections).length).to.equal(1776);
+      expect(Object.keys(metrics.connections).length).to.equal(1749);
     });
 
   });
