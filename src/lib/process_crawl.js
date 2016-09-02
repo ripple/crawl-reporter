@@ -17,6 +17,8 @@ function normalizePubKey(pubKeyStr) {
   return ripple.Base.encode_check(ripple.Base.VER_NODE_PUBLIC, bytes);
 }
 
+var DEFAULT_PORT = 51235
+
 /*
 * Deals with a variety of (ip, port) possibilities that occur
 * in rippled responses and normalizes them to the format 'ip:port'
