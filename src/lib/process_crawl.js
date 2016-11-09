@@ -75,7 +75,7 @@ function getRippleds(nodes) {
         p_ipp = undefined;
       }
       var uptime = peer.uptime;
-      maxUptimeByIpp[n_ipp] = Math.max(maxUptimeByIpp[n_ipp], uptime);        
+      maxUptimeByIpp[n_ipp] = Math.max(maxUptimeByIpp[n_ipp], uptime);
       // Fill in rippled
       var rippled = rippleds[p_pk];
       if (rippled) {
@@ -87,7 +87,7 @@ function getRippleds(nodes) {
         }
         if (!rippled.uptime || rippled.uptime<uptime) {
           rippled.uptime = uptime;
-        }          
+        }
       } else {
         rippleds[p_pk] = {ipp: p_ipp, version: p_v, uptime: uptime, request_time: requestEnd.diff(requestStart)};
       }
@@ -128,24 +128,24 @@ function getConnections(nodes) {
       }
       var p_type = peer.type;
 
-      var a, b; // a = to, b = from
+      var a, b; // a = from, b = to
       // Make link
       if (p_type) {
         // Get link
         if (p_type === 'in') {
-          a = ippToPk[n_ipp];
-          b = p_pk;
-        } else if (p_type === 'out') {
           a = p_pk;
           b = ippToPk[n_ipp];
+        } else if (p_type === 'out') {
+          a = ippToPk[n_ipp];
+          b = p_pk;
         } else if (p_type === 'peer') {
           if (peer.ip) {
             if (peer.ip.split(':').length === 2) {
-              a = ippToPk[n_ipp];
-              b = p_pk;
-            } else {
               a = p_pk;
               b = ippToPk[n_ipp];
+            } else {
+              a = ippToPk[n_ipp];
+              b = p_pk;
             }
           }
         } else {
