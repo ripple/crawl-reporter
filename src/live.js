@@ -8,7 +8,7 @@ var graphite = require('graphite');
 var HbaseClient = require('crawler-hbase').Client;
 
 module.exports = function(max, queueUrl, dbUrl, graphiteUrl, log) {
-  var graphiteClient = graphite.createClient(graphiteUrl);
+//  var graphiteClient = graphite.createClient(graphiteUrl);
   var hbaseClient = new HbaseClient(dbUrl);
   function processMessage() {
     sqs_u.getMessage(queueUrl)
@@ -25,8 +25,9 @@ module.exports = function(max, queueUrl, dbUrl, graphiteUrl, log) {
           }
           var newProcessedCrawl = processCrawl(crawls[0], log);
           var oldProcessedCrawl = processCrawl(crawls[1], log);          
+          console.log(crawls.length)
           return Promise.all([
-            reportGraphite(newProcessedCrawl, graphiteClient), 
+  //          reportGraphite(newProcessedCrawl, graphiteClient), 
             hbaseClient.storeProcessedCrawl(newProcessedCrawl, oldProcessedCrawl)
             .then(function(crawlKey) {
               console.log("Stored processed crawl %s \t at %s", crawlKey, moment().format())
@@ -42,7 +43,7 @@ module.exports = function(max, queueUrl, dbUrl, graphiteUrl, log) {
           process.exit(1);
         });
       } else { // terminate on message absence error
-        console.error('No new messages \t at %s', moment().format());
+        //console.error('No new messages \t at %s', moment().format());
         process.nextTick(processMessage);
       }
     });

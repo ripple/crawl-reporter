@@ -17,7 +17,7 @@ commander
     var dbUrl = process.env.HBASE_URL;
     var graphiteUrl = process.env.GRAPHITE_URL;
     var log = !commander.quiet;
-    if (queueUrl && dbUrl && graphiteUrl) {
+    if (queueUrl && dbUrl) {
       src.live(max, queueUrl, dbUrl, graphiteUrl, log);
     } else {
       console.error("Missing environment variable.")
